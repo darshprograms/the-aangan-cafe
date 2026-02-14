@@ -52,49 +52,73 @@ const ReviewsSection = () => {
             </h2>
 
             <div className="relative z-10 w-full max-w-[1400px] mx-auto px-4 md:px-8">
-                <div className="grid md:grid-cols-2 gap-8 md:gap-12 w-full mx-auto">
-                    {/* Left Column: Add Review Form */}
-                    <div className="bg-white/5 backdrop-blur-sm p-8 rounded-3xl border border-accent/20 shadow-xl h-fit md:sticky md:top-24">
-                        <h3 className="text-2xl font-serif text-accent mb-6 flex items-center gap-3">
-                            <span>✍️</span> Write a Review
-                        </h3>
-                        <form onSubmit={handleSubmit} className="space-y-6">
-                            <div>
-                                <label className="block text-accent/80 mb-2 font-medium">Your Name</label>
-                                <input
-                                    type="text"
-                                    value={newReview.name}
-                                    onChange={(e) => setNewReview({ ...newReview, name: e.target.value })}
-                                    placeholder="Enter your name"
-                                    className="w-full bg-white/10 border border-accent/30 rounded-xl px-4 py-3 text-primary-dark placeholder-gray-400 focus:outline-none focus:border-accent transition-colors"
-                                    required
+                <div className="grid md:grid-cols-2 gap-8 md:gap-12 w-full mx-auto align-start">
+                    {/* Left Column: Add Review Form & QR Code */}
+                    <div className="space-y-8 md:sticky md:top-24 h-fit">
+                        <div className="bg-white/5 backdrop-blur-sm p-8 rounded-3xl border border-accent/20 shadow-xl">
+                            <h3 className="text-2xl font-serif text-accent mb-6 flex items-center gap-3">
+                                <span>✍️</span> Write a Review
+                            </h3>
+                            <form onSubmit={handleSubmit} className="space-y-6">
+                                <div>
+                                    <label className="block text-accent/80 mb-2 font-medium">Your Name</label>
+                                    <input
+                                        type="text"
+                                        value={newReview.name}
+                                        onChange={(e) => setNewReview({ ...newReview, name: e.target.value })}
+                                        placeholder="Enter your name"
+                                        className="w-full bg-white/10 border border-accent/30 rounded-xl px-4 py-3 text-primary-dark placeholder-gray-400 focus:outline-none focus:border-accent transition-colors"
+                                        required
+                                        disabled={isSubmitting}
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-accent/80 mb-2 font-medium">Your Experience</label>
+                                    <textarea
+                                        value={newReview.text}
+                                        onChange={(e) => setNewReview({ ...newReview, text: e.target.value })}
+                                        placeholder="Share your thoughts..."
+                                        rows="4"
+                                        className="w-full bg-white/10 border border-accent/30 rounded-xl px-4 py-3 text-primary-dark placeholder-gray-400 focus:outline-none focus:border-accent transition-colors resize-none"
+                                        required
+                                        disabled={isSubmitting}
+                                    />
+                                </div>
+                                <button
+                                    type="submit"
                                     disabled={isSubmitting}
+                                    className={`w-full bg-accent text-primary font-bold py-3 rounded-xl transition-all transform hover:scale-[1.02] shadow-lg ${isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:bg-white'}`}
+                                >
+                                    {isSubmitting ? 'Posting...' : 'Post Review'}
+                                </button>
+                            </form>
+                        </div>
+
+
+                        {/* Google Review QR Code */}
+                        <div className="bg-white/5 backdrop-blur-sm p-6 rounded-3xl border border-accent/20 flex items-center gap-6 shadow-lg h-fit">
+                            <div className="bg-white p-2 rounded-xl shrink-0">
+                                <img
+                                    src="/google-review-qr.png"
+                                    alt="Google Review QR Code"
+                                    className="w-20 h-20 object-contain"
+                                    onError={(e) => {
+                                        e.target.onerror = null;
+                                        e.target.src = "https://via.placeholder.com/150?text=QR+Code";
+                                    }}
                                 />
                             </div>
                             <div>
-                                <label className="block text-accent/80 mb-2 font-medium">Your Experience</label>
-                                <textarea
-                                    value={newReview.text}
-                                    onChange={(e) => setNewReview({ ...newReview, text: e.target.value })}
-                                    placeholder="Share your thoughts..."
-                                    rows="4"
-                                    className="w-full bg-white/10 border border-accent/30 rounded-xl px-4 py-3 text-primary-dark placeholder-gray-400 focus:outline-none focus:border-accent transition-colors resize-none"
-                                    required
-                                    disabled={isSubmitting}
-                                />
+                                <h3 className="text-xl font-serif text-accent mb-2">Loved your meal?</h3>
+                                <p className="text-gray-300 text-sm leading-relaxed">
+                                    Scan the QR code to leave us a review on Google!
+                                </p>
                             </div>
-                            <button
-                                type="submit"
-                                disabled={isSubmitting}
-                                className={`w-full bg-accent text-primary font-bold py-3 rounded-xl transition-all transform hover:scale-[1.02] shadow-lg ${isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:bg-white'}`}
-                            >
-                                {isSubmitting ? 'Posting...' : 'Post Review'}
-                            </button>
-                        </form>
+                        </div>
                     </div>
 
                     {/* Right Column: Reviews List */}
-                    <div className="max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
+                    <div className="max-h-[800px] overflow-y-auto pr-2 custom-scrollbar">
                         <h3 className="text-2xl font-serif text-accent mb-6 flex items-center gap-3 py-2">
                             <span>💬</span> Recent Feedback
                         </h3>
@@ -124,7 +148,7 @@ const ReviewsSection = () => {
                     </div>
                 </div>
             </div>
-        </section>
+        </section >
     );
 };
 
