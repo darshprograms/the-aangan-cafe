@@ -1,35 +1,48 @@
 import React from 'react';
+import { db } from '../firebase';
+import { collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from 'firebase/firestore';
 
 const ReviewsSection = () => {
-    const [reviews, setReviews] = React.useState(() => {
-        // Initialize from local storage or default data
-        const savedReviews = localStorage.getItem('cafeReviews');
-        return savedReviews ? JSON.parse(savedReviews) : [
-            { id: 1, name: "Rahul S.", text: "Best place for chai and conversation! The vibe is unmatched.", date: "2024-01-15" },
-            { id: 2, name: "Priya M.", text: "Love the Chinese starters. A perfect evening spot.", date: "2024-02-10" }
-        ];
-    });
-
+    const [reviews, setReviews] = React.useState([]);
+    const [isLoading, setIsLoading] = React.useState(true);
     const [newReview, setNewReview] = React.useState({ name: '', text: '' });
+    const [isSubmitting, setIsSubmitting] = React.useState(false);
 
     React.useEffect(() => {
-        // Save to local storage whenever reviews change
-        localStorage.setItem('cafeReviews', JSON.stringify(reviews));
-    }, [reviews]);
+        // Subscribe to real-time updates from Firestore
+        const q = query(collection(db, "reviews"), orderBy("timestamp", "desc"));
+        const unsubscribe = onSnapshot(q, (snapshot) => {
+            const reviewsData = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            setReviews(reviewsData);
+            setIsLoading(false);
+        });
 
-    const handleSubmit = (e) => {
+        // Cleanup subscription
+        return () => unsubscribe();
+    }, []);
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (!newReview.name.trim() || !newReview.text.trim()) return;
 
-        const reviewToAdd = {
-            id: Date.now(),
-            name: newReview.name,
-            text: newReview.text,
-            date: new Date().toLocaleDateString()
-        };
-
-        setReviews([reviewToAdd, ...reviews]);
-        setNewReview({ name: '', text: '' });
+        setIsSubmitting(true);
+        try {
+            await addDoc(collection(db, "reviews"), {
+                name: newReview.name,
+                text: newReview.text,
+                date: new Date().toLocaleDateString(),
+                timestamp: serverTimestamp()
+            });
+            setNewReview({ name: '', text: '' });
+        } catch (error) {
+            console.error("Error adding review: ", error);
+            alert("Failed to submit review. Please try again.");
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -55,6 +68,7 @@ const ReviewsSection = () => {
                                     placeholder="Enter your name"
                                     className="w-full bg-white/10 border border-accent/30 rounded-xl px-4 py-3 text-primary-dark placeholder-gray-400 focus:outline-none focus:border-accent transition-colors"
                                     required
+                                    disabled={isSubmitting}
                                 />
                             </div>
                             <div>
@@ -66,13 +80,15 @@ const ReviewsSection = () => {
                                     rows="4"
                                     className="w-full bg-white/10 border border-accent/30 rounded-xl px-4 py-3 text-primary-dark placeholder-gray-400 focus:outline-none focus:border-accent transition-colors resize-none"
                                     required
+                                    disabled={isSubmitting}
                                 />
                             </div>
                             <button
                                 type="submit"
-                                className="w-full bg-accent text-primary font-bold py-3 rounded-xl hover:bg-white transition-all transform hover:scale-[1.02] shadow-lg"
+                                disabled={isSubmitting}
+                                className={`w-full bg-accent text-primary font-bold py-3 rounded-xl transition-all transform hover:scale-[1.02] shadow-lg ${isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:bg-white'}`}
                             >
-                                Post Review
+                                {isSubmitting ? 'Posting...' : 'Post Review'}
                             </button>
                         </form>
                     </div>
@@ -82,8 +98,16 @@ const ReviewsSection = () => {
                         <h3 className="text-2xl font-serif text-accent mb-6 flex items-center gap-3 sticky top-0 bg-primary z-10 py-2">
                             <span>💬</span> Recent Feedback
                         </h3>
-                        {reviews.length === 0 ? (
-                            <p className="text-center text-gray-400 italic">No reviews yet. Be the first to add one!</p>
+                        {isLoading ? (
+                            <div className="text-center py-12">
+                                <div className="inline-block w-8 h-8 border-4 border-accent border-t-transparent rounded-full animate-spin mb-4"></div>
+                                <p className="text-accent/80 animate-pulse">Loading reviews...</p>
+                            </div>
+                        ) : reviews.length === 0 ? (
+                            <div className="text-center py-8">
+                                <p className="text-gray-400 italic mb-2">No reviews yet.</p>
+                                <p className="text-accent/60 text-sm">Be the first to share your experience!</p>
+                            </div>
                         ) : (
                             reviews.map((review) => (
                                 <div key={review.id} className="bg-white p-6 rounded-2xl shadow-md border-l-4 border-accent hover:shadow-lg transition-shadow">
