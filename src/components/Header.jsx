@@ -40,14 +40,14 @@ const Header = ({ onNavigate, activeView }) => {
                             Home
                             <span className={`absolute bottom-0 left-0 h-0.5 bg-accent transition-all duration-300 ${activeView === 'home' ? 'w-full' : 'w-0 group-hover:w-full'}`}></span>
                         </button>
-                        {['About', 'Menu', 'Gallery', 'Reviews', 'Contact', 'Payment'].map((item) => (
+                        {['About', 'Menu', 'Gallery', 'Order/Reserve', 'Reviews', 'Contact', 'Payment'].map((item) => (
                             <button
                                 key={item}
-                                onClick={() => onNavigate(item.toLowerCase())}
-                                className={`hover:text-accent transition-colors duration-300 relative group py-1 ${activeView === item.toLowerCase() ? 'text-accent' : ''}`}
+                                onClick={() => onNavigate(item === 'Order/Reserve' ? 'order' : item.toLowerCase())}
+                                className={`hover:text-accent transition-colors duration-300 relative group py-1 ${activeView === (item === 'Order/Reserve' ? 'order' : item.toLowerCase()) ? 'text-accent' : ''}`}
                             >
                                 {item}
-                                <span className={`absolute bottom-0 left-0 h-0.5 bg-accent transition-all duration-300 ${activeView === item.toLowerCase() ? 'w-full' : 'w-0 group-hover:w-full'}`}></span>
+                                <span className={`absolute bottom-0 left-0 h-0.5 bg-accent transition-all duration-300 ${activeView === (item === 'Order/Reserve' ? 'order' : item.toLowerCase()) ? 'w-full' : 'w-0 group-hover:w-full'}`}></span>
                             </button>
                         ))}
                         <button

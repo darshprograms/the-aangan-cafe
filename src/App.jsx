@@ -9,6 +9,7 @@ import PaymentSection from './components/PaymentSection';
 import FoodMenu from './components/FoodMenu';
 import HeroSection from './components/HeroSection';
 import SiteQR from './components/SiteQR';
+import OrderReserveSection from './components/OrderReserveSection';
 
 function App() {
   const [activeView, setActiveView] = React.useState('home');
@@ -36,6 +37,8 @@ function App() {
         return <main className="container mx-auto px-4 pt-4 pb-12"><FoodMenu /></main>;
       case 'gallery':
         return <main className="container mx-auto px-4 pt-4 pb-12"><GallerySection /></main>;
+      case 'order':
+        return <main className="container mx-auto px-4 pt-4 pb-12"><OrderReserveSection /></main>;
       case 'reviews':
         return <main className="container mx-auto px-4 pt-4 pb-12"><ReviewsSection /></main>;
       case 'contact':

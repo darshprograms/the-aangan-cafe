@@ -1,6 +1,7 @@
 export const cafeName = "The Aangan Cafe";
 export const caption = "Chai, Chaat & Chill All Under One Aangan";
-export const contactNumber = "+91 9325180567";
+//export const contactNumber = "+91 9325180567";
+export const contactNumber = "+91 8668327218";
 export const address = "CH Sambhajinagar, N1 CIDCO";
 export const socialLinks = {
     instagram: "theaangancafe",
@@ -13,6 +14,7 @@ export const menuCategories = [
         type: "food",
         title: " Soup",
         items: [
+            { name: "Veggie Soup", price: 1 },
             { name: "Veg Clear Soup", price: 100 },
             { name: "Veg Manchow Soup (R)", price: 100 },
             { name: "Veg Hot and Sour Soup", price: 100 },
