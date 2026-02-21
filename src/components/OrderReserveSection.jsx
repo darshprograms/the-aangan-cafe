@@ -76,9 +76,19 @@ const OrderReserveSection = () => {
     const MERCHANT_NAME = 'The Aangan Cafe';
 
     const handleUPIPay = () => {
-        // Ensuring 2 decimal places and simplified name for better compatibility
+        if (totalPrice <= 0) {
+            alert("Amount must be at least ₹1 to pay via UPI.");
+            return;
+        }
+
+        // Generating a unique transaction ID
+        const transactionID = `ANG${Date.now()}`;
         const formattedAmount = Number(totalPrice).toFixed(2);
-        const upiUrl = `upi://pay?pa=${UPI_ID}&pn=AanganCafe&am=${formattedAmount}&cu=INR`;
+        const note = encodeURIComponent(`Order for ${formData.name}`);
+
+        // Standard UPI URI format with extra parameters for better app compatibility
+        const upiUrl = `upi://pay?pa=${UPI_ID}&pn=Nidhi&am=${formattedAmount}&cu=INR&tr=${transactionID}&tn=${note}`;
+
         window.location.href = upiUrl;
     };
 
