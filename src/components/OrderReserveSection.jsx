@@ -81,13 +81,12 @@ const OrderReserveSection = () => {
             return;
         }
 
-        // Generating a unique transaction ID
-        const transactionID = `ANG${Date.now()}`;
         const formattedAmount = Number(totalPrice).toFixed(2);
-        const note = encodeURIComponent(`Order for ${formData.name}`);
 
-        // Standard UPI URI format with extra parameters for better app compatibility
-        const upiUrl = `upi://pay?pa=${UPI_ID}&pn=Nidhi&am=${formattedAmount}&cu=INR&tr=${transactionID}&tn=${note}`;
+        // MINIMAL P2P LINK (Peer-to-Peer)
+        // Some personal UPI IDs block 'tr' (Transaction Ref) or 'tn' (Note) when sent from a browser.
+        // This is the simplest possible link format that banks usually allow.
+        const upiUrl = `upi://pay?pa=${UPI_ID}&pn=Nidhi&am=${formattedAmount}&cu=INR`;
 
         window.location.href = upiUrl;
     };
