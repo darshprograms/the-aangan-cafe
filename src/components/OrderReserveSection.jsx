@@ -76,7 +76,9 @@ const OrderReserveSection = () => {
     const MERCHANT_NAME = 'The Aangan Cafe';
 
     const handleUPIPay = () => {
-        const upiUrl = `upi://pay?pa=${UPI_ID}&pn=${encodeURIComponent(MERCHANT_NAME)}&am=${totalPrice}&cu=INR`;
+        // Ensuring 2 decimal places and simplified name for better compatibility
+        const formattedAmount = Number(totalPrice).toFixed(2);
+        const upiUrl = `upi://pay?pa=${UPI_ID}&pn=AanganCafe&am=${formattedAmount}&cu=INR`;
         window.location.href = upiUrl;
     };
 
