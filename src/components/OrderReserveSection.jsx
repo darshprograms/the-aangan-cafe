@@ -82,11 +82,14 @@ const OrderReserveSection = () => {
         }
 
         const formattedAmount = Number(totalPrice).toFixed(2);
+        const upiParams = `pa=${UPI_ID}&pn=Nidhi&am=${formattedAmount}&cu=INR`;
 
-        // MINIMAL P2P LINK (Peer-to-Peer)
-        // Some personal UPI IDs block 'tr' (Transaction Ref) or 'tn' (Note) when sent from a browser.
-        // This is the simplest possible link format that banks usually allow.
-        const upiUrl = `upi://pay?pa=${UPI_ID}&pn=Nidhi&am=${formattedAmount}&cu=INR`;
+        // This targets Google Pay specifically on Android. 
+        // For iPhone, it stays as standard upi:// which lets the user pick.
+        const isAndroid = /Android/i.test(navigator.userAgent);
+        const upiUrl = isAndroid
+            ? `intent://pay?${upiParams}#Intent;scheme=upi;package=com.google.android.apps.nbu.paisa.user;S.browser_fallback_url=upi://pay?${upiParams};end`
+            : `upi://pay?${upiParams}`;
 
         window.location.href = upiUrl;
     };
