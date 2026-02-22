@@ -20,6 +20,7 @@ const OrderReserveSection = () => {
     const [hasPaid, setHasPaid] = useState(false);
     const [copied, setCopied] = useState(false);
     const [showScrollPrompt, setShowScrollPrompt] = useState(false);
+    const [activeCategoryId, setActiveCategoryId] = useState(null);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -49,7 +50,16 @@ const OrderReserveSection = () => {
         if (validate(type)) {
             setFlowType(type);
             setStep(2);
+            // Default to first category when entering menu step
+            const firstCat = menuCategories.find(cat => cat.type === (menuType || 'food'))?.id;
+            setActiveCategoryId(firstCat || null);
         }
+    };
+
+    const handleMenuTypeChange = (type) => {
+        setMenuType(type);
+        const firstCat = menuCategories.find(cat => cat.type === type)?.id;
+        setActiveCategoryId(firstCat || null);
     };
 
     const addToCart = (item) => {
@@ -223,61 +233,79 @@ const OrderReserveSection = () => {
                     </div>
 
                     {/* Menu Type Tabs */}
-                    <div className="flex gap-4 mb-8 border-b border-accent/10">
+                    <div className="flex gap-4 mb-4 border-b border-accent/10">
                         <button
-                            onClick={() => setMenuType('food')}
+                            onClick={() => handleMenuTypeChange('food')}
                             className={`pb-2 px-4 font-bold transition-all border-b-2 ${menuType === 'food' ? 'border-accent text-accent' : 'border-transparent text-gray-500 hover:text-gray-300'}`}
                         >
                             Food
                         </button>
                         <button
-                            onClick={() => setMenuType('drink')}
+                            onClick={() => handleMenuTypeChange('drink')}
                             className={`pb-2 px-4 font-bold transition-all border-b-2 ${menuType === 'drink' ? 'border-accent text-accent' : 'border-transparent text-gray-500 hover:text-gray-300'}`}
                         >
                             Drinks
                         </button>
                     </div>
 
-                    <div className="space-y-8 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
-                        {filteredCategories.map(category => (
-                            <div key={category.id}>
-                                <h3 className="text-lg font-bold text-accent/80 border-b border-accent/20 mb-4 pb-1">{category.title}</h3>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                    {category.items.map(item => (
-                                        <div key={item.name} className="flex justify-between items-center bg-primary/40 p-3 rounded-lg border border-accent/10 hover:border-accent/30 transition-all">
-                                            <div className="flex flex-col">
-                                                <span className="font-medium">{item.name}</span>
-                                                <span className="text-accent text-sm">₹{item.price}</span>
-                                            </div>
-                                            {getItemQuantity(item.name) > 0 ? (
-                                                <div className="flex items-center gap-2 bg-accent/20 rounded-lg p-1 border border-accent/30">
-                                                    <button
-                                                        onClick={(e) => { e.stopPropagation(); removeFromCart(item.name); }}
-                                                        className="w-8 h-8 flex items-center justify-center rounded bg-accent/20 text-accent hover:bg-accent hover:text-primary transition-all font-bold"
-                                                    >
-                                                        −
-                                                    </button>
-                                                    <span className="w-6 text-center font-bold text-accent">{getItemQuantity(item.name)}</span>
-                                                    <button
-                                                        onClick={(e) => { e.stopPropagation(); addToCart(item); }}
-                                                        className="w-8 h-8 flex items-center justify-center rounded bg-accent text-primary hover:bg-accent-light transition-all font-bold shadow-[0_0_10px_rgba(212,175,55,0.2)]"
-                                                    >
-                                                        +
-                                                    </button>
-                                                </div>
-                                            ) : (
-                                                <button
-                                                    onClick={() => addToCart(item)}
-                                                    className="bg-accent/10 text-accent border border-accent/30 px-4 py-1.5 rounded-lg hover:bg-accent hover:text-primary transition-all text-sm font-bold shadow-sm"
-                                                >
-                                                    Add +
-                                                </button>
-                                            )}
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
+                    {/* Subcategory Navigation Chips */}
+                    <div className="flex gap-2 mb-6 overflow-x-auto pb-2 custom-scrollbar">
+                        {filteredCategories.map(cat => (
+                            <button
+                                key={cat.id}
+                                onClick={() => setActiveCategoryId(cat.id)}
+                                className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all border ${activeCategoryId === cat.id
+                                    ? 'bg-accent text-primary border-accent'
+                                    : 'bg-primary/40 text-gray-400 border-accent/20 hover:border-accent/50'
+                                    }`}
+                            >
+                                {cat.title}
+                            </button>
                         ))}
+                    </div>
+
+                    <div className="space-y-8 max-h-[50vh] overflow-y-auto pr-2 custom-scrollbar">
+                        {filteredCategories
+                            .filter(cat => !activeCategoryId || cat.id === activeCategoryId)
+                            .map(category => (
+                                <div key={category.id}>
+                                    <h3 className="text-lg font-bold text-accent/80 border-b border-accent/20 mb-4 pb-1">{category.title}</h3>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                        {category.items.map(item => (
+                                            <div key={item.name} className="flex justify-between items-center bg-primary/40 p-3 rounded-lg border border-accent/10 hover:border-accent/30 transition-all">
+                                                <div className="flex flex-col">
+                                                    <span className="font-medium">{item.name}</span>
+                                                    <span className="text-accent text-sm">₹{item.price}</span>
+                                                </div>
+                                                {getItemQuantity(item.name) > 0 ? (
+                                                    <div className="flex items-center gap-2 bg-accent/20 rounded-lg p-1 border border-accent/30">
+                                                        <button
+                                                            onClick={(e) => { e.stopPropagation(); removeFromCart(item.name); }}
+                                                            className="w-8 h-8 flex items-center justify-center rounded bg-accent/20 text-accent hover:bg-accent hover:text-primary transition-all font-bold"
+                                                        >
+                                                            −
+                                                        </button>
+                                                        <span className="w-6 text-center font-bold text-accent">{getItemQuantity(item.name)}</span>
+                                                        <button
+                                                            onClick={(e) => { e.stopPropagation(); addToCart(item); }}
+                                                            className="w-8 h-8 flex items-center justify-center rounded bg-accent text-primary hover:bg-accent-light transition-all font-bold shadow-[0_0_10px_rgba(212,175,55,0.2)]"
+                                                        >
+                                                            +
+                                                        </button>
+                                                    </div>
+                                                ) : (
+                                                    <button
+                                                        onClick={() => addToCart(item)}
+                                                        className="bg-accent/10 text-accent border border-accent/30 px-4 py-1.5 rounded-lg hover:bg-accent hover:text-primary transition-all text-sm font-bold shadow-sm"
+                                                    >
+                                                        Add +
+                                                    </button>
+                                                )}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            ))}
                     </div>
                 </div>
 
