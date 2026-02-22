@@ -91,7 +91,7 @@ const OrderReserveSection = () => {
             `📅 *Date:* ${formData.date}%0A` +
             `⏰ *Time:* ${formData.time}%0A` +
             (formData.requests ? `💬 *Requests:* ${formData.requests}%0A` : '') +
-            (cart.length > 0 ? `%0A📝 *Order Details:*%0A${orderDetails}%0A%0A💰 *Total Price:* ₹${totalPrice}%0A✅ *Payment Status:* Confirmed by customer via UPI. [Please share screenshot below]` : '');
+            (cart.length > 0 ? `%0A📝 *Order Details:*%0A${orderDetails}%0A%0A💰 *Total Price:* ₹${totalPrice}%0A✅ *Payment Status:* Confirmed by customer via UPI.` : '');
 
         const whatsappUrl = `https://wa.me/${OWNER_PHONE}?text=${message}`;
         window.open(whatsappUrl, '_blank');
