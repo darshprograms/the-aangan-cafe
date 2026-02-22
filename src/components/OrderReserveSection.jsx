@@ -18,6 +18,7 @@ const OrderReserveSection = () => {
     const [flowType, setFlowType] = useState(''); // 'book' or 'reserve'
     const [menuType, setMenuType] = useState('food'); // 'food' or 'drink'
     const [hasPaid, setHasPaid] = useState(false);
+    const [copied, setCopied] = useState(false);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -72,6 +73,13 @@ const OrderReserveSection = () => {
 
     // WHATSAPP CONFIG
     const OWNER_PHONE = contactNumber.replace(/\D/g, '');
+    const UPI_ID = 'nidhi005tank@okhdfcbank';
+
+    const handleCopy = () => {
+        navigator.clipboard.writeText(UPI_ID);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+    };
 
     const sendWhatsAppMessage = () => {
         const orderDetails = cart.map(item => `• ${item.name} x ${item.quantity} (₹${item.price * item.quantity})`).join('%0A');
