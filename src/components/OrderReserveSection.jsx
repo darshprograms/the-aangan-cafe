@@ -82,14 +82,13 @@ const OrderReserveSection = () => {
         }
 
         const formattedAmount = Number(totalPrice).toFixed(2);
-        const upiParams = `pa=${UPI_ID}&pn=AanganCafe&am=${formattedAmount}&cu=INR`;
+        // mc=5812 (Restaurants), mode=02 (Static QR mode) helps pre-fill the amount in some versions of GPay
+        const upiParams = `pa=${UPI_ID}&pn=AanganCafe&am=${formattedAmount}&cu=INR&mc=5812&mode=02`;
 
-        // Android specific Intent to force GPay and ensure amount pre-fill
-        // iOS/Other will use tez:// protocol (Dedicated GPay protocol)
         const isAndroid = /Android/i.test(navigator.userAgent);
         const upiUrl = isAndroid
             ? `intent://pay?${upiParams}#Intent;scheme=upi;package=com.google.android.apps.nbu.paisa.user;S.browser_fallback_url=upi://pay?${upiParams};end`
-            : `tez://pay?${upiParams}`;
+            : `upi://pay?${upiParams}`;
 
         window.location.href = upiUrl;
     };
@@ -323,11 +322,14 @@ const OrderReserveSection = () => {
 
             <button
                 onClick={handleUPIPay}
-                className="w-full mb-6 bg-primary border-2 border-accent text-accent hover:bg-accent hover:text-primary py-3 rounded-lg font-bold transition-all flex items-center justify-center gap-2 group md:hidden"
+                className="w-full mb-2 bg-primary border-2 border-accent text-accent hover:bg-accent hover:text-primary py-3 rounded-lg font-bold transition-all flex items-center justify-center gap-2 group md:hidden"
             >
-                <img src="https://www.vectorlogo.zone/logos/upi/upi-icon.svg" alt="UPI" className="w-8 h-8 group-hover:brightness-0 transition-all" />
-                Pay via any UPI App
+                <img src="https://www.vectorlogo.zone/logos/google_pay/google_pay-icon.svg" alt="GPay" className="w-8 h-8 group-hover:brightness-0 transition-all" />
+                Pay with Google Pay
             </button>
+            <p className="text-[10px] text-gray-400 mb-6 md:hidden">
+                Note: If amount is not pre-filled, please enter <span className="text-accent">₹{totalPrice}</span> manually.
+            </p>
 
             <div className="bg-accent/5 p-4 rounded-lg mb-6 border border-accent/20">
                 <label className="flex items-center gap-3 cursor-pointer group">
