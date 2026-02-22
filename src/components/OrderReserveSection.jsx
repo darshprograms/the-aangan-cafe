@@ -82,10 +82,14 @@ const OrderReserveSection = () => {
         }
 
         const formattedAmount = Number(totalPrice).toFixed(2);
+        const upiParams = `pa=${UPI_ID}&pn=AanganCafe&am=${formattedAmount}&cu=INR`;
 
-        // tez:// is the official Google Pay (Tez) protocol.
-        // It bypasses the system app picker and attempts to open GPay directly.
-        const upiUrl = `tez://pay?pa=${UPI_ID}&pn=AanganCafe&am=${formattedAmount}&cu=INR`;
+        // Android specific Intent to force GPay and ensure amount pre-fill
+        // iOS/Other will use tez:// protocol (Dedicated GPay protocol)
+        const isAndroid = /Android/i.test(navigator.userAgent);
+        const upiUrl = isAndroid
+            ? `intent://pay?${upiParams}#Intent;scheme=upi;package=com.google.android.apps.nbu.paisa.user;S.browser_fallback_url=upi://pay?${upiParams};end`
+            : `tez://pay?${upiParams}`;
 
         window.location.href = upiUrl;
     };
