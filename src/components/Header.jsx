@@ -44,7 +44,7 @@ const Header = ({ onNavigate, activeView }) => {
                             <button
                                 key={item}
                                 onClick={() => onNavigate(item === 'Order / Reserve ' ? 'order' : item.toLowerCase())}
-                                className={`hover:text-accent transition-colors duration-300 relative group py-1 ${activeView === (item === 'Order / Reserve Table' ? 'order' : item.toLowerCase()) ? 'text-accent' : ''}`}
+                                className={`hover:text-accent transition-colors duration-300 relative group py-1 ${activeView === (item === 'Order / Reserve ' ? 'order' : item.toLowerCase()) ? 'text-accent' : ''}`}
                             >
                                 {item}
                                 <span className={`absolute bottom-0 left-0 h-0.5 bg-accent transition-all duration-300 ${activeView === (item === 'Order / Reserve ' ? 'order' : item.toLowerCase()) ? 'w-full' : 'w-0 group-hover:w-full'}`}></span>
