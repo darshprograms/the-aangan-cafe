@@ -20,7 +20,6 @@ const OrderReserveSection = () => {
     const [hasPaid, setHasPaid] = useState(false);
     const [copied, setCopied] = useState(false);
     const [showScrollPrompt, setShowScrollPrompt] = useState(false);
-    const [hasShownScrollPrompt, setHasShownScrollPrompt] = useState(false);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -62,12 +61,9 @@ const OrderReserveSection = () => {
             return [...prev, { ...item, quantity: 1 }];
         });
 
-        // Show scroll prompt on mobile only once
-        if (!hasShownScrollPrompt) {
-            setShowScrollPrompt(true);
-            setHasShownScrollPrompt(true);
-            setTimeout(() => setShowScrollPrompt(false), 3000);
-        }
+        // Show scroll prompt on mobile
+        setShowScrollPrompt(true);
+        setTimeout(() => setShowScrollPrompt(false), 3000);
     };
 
     const removeFromCart = (itemName) => {

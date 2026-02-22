@@ -33,18 +33,22 @@ const MobileMenu = ({ onOpenPolicies, onNavigate }) => {
                         >
                             Home
                         </button>
-                        {['About', 'Menu', 'Gallery', 'Order / Reserve ', 'Reviews', 'Contact', 'Payment'].map((item) => (
-                            <button
-                                key={item}
-                                className="text-left px-6 py-3 text-sm font-medium tracking-wide hover:bg-accent/10 hover:text-accent transition-colors border-l-4 border-transparent hover:border-accent"
-                                onClick={() => {
-                                    setIsMenuOpen(false);
-                                    onNavigate(item === 'Order / Reserve ' ? 'order' : item.toLowerCase());
-                                }}
-                            >
-                                {item}
-                            </button>
-                        ))}
+                        {['About', 'Menu', 'Gallery', 'Order / Reserve ', 'Reviews', 'Contact', 'Payment'].map((item) => {
+                            const isOrder = item.toLowerCase().includes('order');
+                            const targetView = isOrder ? 'order' : item.toLowerCase().trim();
+                            return (
+                                <button
+                                    key={item}
+                                    className="text-left px-6 py-3 text-sm font-medium tracking-wide hover:bg-accent/10 hover:text-accent transition-colors border-l-4 border-transparent hover:border-accent"
+                                    onClick={() => {
+                                        setIsMenuOpen(false);
+                                        onNavigate(targetView);
+                                    }}
+                                >
+                                    {item}
+                                </button>
+                            );
+                        })}
                         <button
                             className="text-left px-6 py-3 text-sm font-medium tracking-wide hover:bg-accent/10 hover:text-accent transition-colors border-l-4 border-transparent hover:border-accent text-accent"
                             onClick={() => {
