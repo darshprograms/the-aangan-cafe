@@ -57,8 +57,11 @@ const Footer = () => {
 
                 {/* Bottom Bar */}
                 <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500 gap-4">
-                    <div>
-                        &copy; {new Date().getFullYear()} Aangan Cafe. All rights reserved.
+                    <div className="text-center md:text-left">
+                        <p>&copy; {new Date().getFullYear()} Aangan Cafe. All rights reserved.</p>
+                        <p className="mt-1">
+                            Created by Darshana Akadkar • <a href="mailto:darshana.akadkar@gmail.com" className="hover:text-accent transition-colors">darshana.akadkar@gmail.com</a>
+                        </p>
                     </div>
                     <div className="flex gap-6">
                         <a href="#" className="hover:text-gray-300 transition-colors">Privacy Policy</a>
