@@ -81,20 +81,6 @@ const OrderReserveSection = () => {
         setTimeout(() => setCopied(false), 2000);
     };
 
-    const handleUPIPay = () => {
-        if (totalPrice <= 0) {
-            alert("Amount must be at least ₹1 to pay via UPI.");
-            return;
-        }
-
-        const formattedAmount = Number(totalPrice).toFixed(2);
-        // Clean but complete UPI protocol (added pn and tn which are mandatory for some banks)
-        const upiParams = `pa=${UPI_ID}&pn=Nidhi%20Tank&am=${formattedAmount}&cu=INR&tn=Order`;
-        const upiUrl = `upi://pay?${upiParams}`;
-
-        window.location.href = upiUrl;
-    };
-
     const sendWhatsAppMessage = () => {
         const orderDetails = cart.map(item => `• ${item.name} x ${item.quantity} (₹${item.price * item.quantity})`).join('%0A');
         const message = `*🔔 New Order/Reservation*%0A%0A` +
@@ -323,9 +309,6 @@ const OrderReserveSection = () => {
                 </div>
 
                 <div className="bg-white p-6 rounded-lg inline-block w-full mb-4 border-4 border-accent text-center relative overflow-hidden">
-                    <div className="absolute top-0 right-0 bg-accent text-primary text-[10px] font-bold px-2 py-1 rounded-bl-lg shadow-sm">
-                        ⭐ MOST RELIABLE
-                    </div>
                     {/* Mock QR Code */}
                     <div className="max-w-[220px] mx-auto relative p-2 bg-white rounded-xl shadow-inner border border-gray-100">
                         <img src="/payment-qr.png" alt="Payment QR" className="w-full h-auto rounded-lg" />
@@ -333,22 +316,6 @@ const OrderReserveSection = () => {
                     <p className="text-primary-dark mt-4 font-black text-base uppercase">Scan QR to pay ₹{totalPrice}</p>
                     <p className="text-[10px] text-gray-400 mt-1 leading-tight">
                         (Guaranteed to work with all banks)
-                    </p>
-                </div>
-
-                <div className="mb-6">
-                    <button
-                        onClick={handleUPIPay}
-                        className="w-full bg-accent text-primary hover:bg-accent-light py-5 rounded-lg font-black text-lg transition-all flex flex-col items-center justify-center gap-1 shadow-[0_0_30px_rgba(212,175,55,0.4)] animate-pulse"
-                    >
-                        <div className="flex items-center gap-2">
-                            <img src="https://www.vectorlogo.zone/logos/upi/upi-icon.svg" alt="UPI" className="w-8 h-8 brightness-0" />
-                            <span>PAY USING ANY UPI APP</span>
-                        </div>
-
-                    </button>
-                    <p className="text-[11px] text-accent-light mt-3 text-center font-medium bg-accent/5 py-2 rounded border border-accent/20">
-                        💡 Tip: If the button above shows an error, please **Scan the QR code** instead.
                     </p>
                 </div>
 
@@ -382,7 +349,7 @@ const OrderReserveSection = () => {
                 </div>
 
                 <p className="text-xs text-gray-400 mb-4 font-medium italic">
-                    Once paid, return here, check the box, and click the green button to notify the cafe owner.
+                    Once paid, return here, check the box, and click the WhatsApp icon to notify the cafe owner.
                 </p>
 
                 <div className="bg-accent/5 p-4 rounded-lg mb-6 border border-accent/20">
@@ -410,7 +377,7 @@ const OrderReserveSection = () => {
                     className={`w-full ${hasPaid ? 'bg-green-600 hover:bg-green-700 shadow-[0_0_20px_rgba(34,197,94,0.3)]' : 'bg-gray-700 cursor-not-allowed opacity-50'} text-white py-4 rounded-lg font-black text-lg transition-all flex items-center justify-center gap-2 uppercase`}
                 >
                     <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.438 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" /></svg>
-                    Send Order Details to Cafe
+                    Send Order Details to Cafe Owner
                 </button>
                 <button
                     onClick={() => setStep(2)}
