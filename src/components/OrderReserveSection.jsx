@@ -70,28 +70,8 @@ const OrderReserveSection = () => {
         });
     };
 
-    // WHATSAPP & UPI CONFIG
+    // WHATSAPP CONFIG
     const OWNER_PHONE = contactNumber.replace(/\D/g, '');
-    const UPI_ID = 'nidhi005tank@okhdfcbank';
-    const MERCHANT_NAME = 'The Aangan Cafe';
-
-    const handleUPIPay = () => {
-        if (totalPrice <= 0) {
-            alert("Amount must be at least ₹1 to pay via UPI.");
-            return;
-        }
-
-        const formattedAmount = Number(totalPrice).toFixed(2);
-        // mc=5812 (Restaurants), mode=02 (Static QR mode) helps pre-fill the amount in some versions of GPay
-        const upiParams = `pa=${UPI_ID}&pn=AanganCafe&am=${formattedAmount}&cu=INR&mc=5812&mode=02`;
-
-        const isAndroid = /Android/i.test(navigator.userAgent);
-        const upiUrl = isAndroid
-            ? `intent://pay?${upiParams}#Intent;scheme=upi;package=com.google.android.apps.nbu.paisa.user;S.browser_fallback_url=upi://pay?${upiParams};end`
-            : `upi://pay?${upiParams}`;
-
-        window.location.href = upiUrl;
-    };
 
     const sendWhatsAppMessage = () => {
         const orderDetails = cart.map(item => `• ${item.name} x ${item.quantity} (₹${item.price * item.quantity})`).join('%0A');
@@ -320,16 +300,19 @@ const OrderReserveSection = () => {
             </div>
             <p className="text-gray-300 mb-4 font-medium">Scan QR to pay <span className="text-accent text-xl font-bold">₹{totalPrice}</span></p>
 
-            <button
-                onClick={handleUPIPay}
-                className="w-full mb-2 bg-primary border-2 border-accent text-accent hover:bg-accent hover:text-primary py-3 rounded-lg font-bold transition-all flex items-center justify-center gap-2 group md:hidden"
-            >
-                <img src="https://www.vectorlogo.zone/logos/google_pay/google_pay-icon.svg" alt="GPay" className="w-8 h-8 group-hover:brightness-0 transition-all" />
-                Pay with Google Pay
-            </button>
-            <p className="text-[10px] text-gray-400 mb-6 md:hidden">
-                Note: If amount is not pre-filled, please enter <span className="text-accent">₹{totalPrice}</span> manually.
-            </p>
+            {/* Failsafe: Copy UPI ID */}
+            <div className="mb-6">
+                <p className="text-gray-400 text-xs mb-2">Manual Payment UPI ID:</p>
+                <div className="flex items-center gap-2 bg-primary/30 p-2 rounded-lg border border-accent/10">
+                    <code className="text-accent text-sm flex-1 overflow-hidden text-ellipsis">nidhi005tank@okhdfcbank</code>
+                    <button
+                        onClick={handleCopy}
+                        className="bg-accent text-primary px-3 py-1 rounded text-xs font-bold hover:bg-accent-light transition-all"
+                    >
+                        {copied ? 'Copied!' : 'Copy ID'}
+                    </button>
+                </div>
+            </div>
 
             <div className="bg-accent/5 p-4 rounded-lg mb-6 border border-accent/20">
                 <label className="flex items-center gap-3 cursor-pointer group">
