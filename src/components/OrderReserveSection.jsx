@@ -81,6 +81,20 @@ const OrderReserveSection = () => {
         setTimeout(() => setCopied(false), 2000);
     };
 
+    const handleUPIPay = () => {
+        if (totalPrice <= 0) {
+            alert("Amount must be at least ₹1 to pay via UPI.");
+            return;
+        }
+
+        const formattedAmount = Number(totalPrice).toFixed(2);
+        // Universal UPI protocol that opens the app picker
+        const upiParams = `pa=${UPI_ID}&pn=AanganCafe&am=${formattedAmount}&cu=INR&mc=5812`;
+        const upiUrl = `upi://pay?${upiParams}`;
+
+        window.location.href = upiUrl;
+    };
+
     const sendWhatsAppMessage = () => {
         const orderDetails = cart.map(item => `• ${item.name} x ${item.quantity} (₹${item.price * item.quantity})`).join('%0A');
         const message = `*🔔 New Order/Reservation*%0A%0A` +
@@ -299,42 +313,74 @@ const OrderReserveSection = () => {
 
     const renderStep3 = () => (
         <div className="max-w-md mx-auto bg-primary-light p-8 rounded-xl border border-accent/20 text-center shadow-2xl animate-fade-in">
-            <h2 className="text-2xl font-serif font-bold text-accent mb-6">UPI Payment</h2>
-            <div className="bg-white p-4 rounded-lg inline-block mb-3 border-4 border-accent">
-                {/* Mock QR Code */}
-                <div className="max-w-[224px] mx-auto relative p-1 bg-white rounded-xl shadow-lg mb-4">
-                    <img src="/payment-qr.png" alt="Payment QR" className="w-full h-auto rounded-lg" />
+            <h2 className="text-2xl font-serif font-bold text-accent mb-6">Complete Your Payment</h2>
+
+            {/* Step 1: Pay */}
+            <div className="mb-8 text-left">
+                <div className="flex items-center gap-3 mb-4">
+                    <span className="bg-accent text-primary w-6 h-6 rounded-full flex items-center justify-center font-bold text-sm">1</span>
+                    <h3 className="text-lg font-bold text-white">Make Payment</h3>
                 </div>
-            </div>
-            <p className="text-gray-300 mb-4 font-medium">Scan QR to pay <span className="text-accent text-xl font-bold">₹{totalPrice}</span></p>
 
+                <div className="bg-white p-4 rounded-lg inline-block w-full mb-4 border-4 border-accent text-center">
+                    {/* Mock QR Code */}
+                    <div className="max-w-[200px] mx-auto relative p-1 bg-white rounded-xl shadow-lg">
+                        <img src="/payment-qr.png" alt="Payment QR" className="w-full h-auto rounded-lg" />
+                    </div>
+                    <p className="text-primary-dark mt-3 font-bold text-sm">Scan QR to pay ₹{totalPrice}</p>
+                </div>
 
-            {/* Failsafe: Copy UPI ID */}
-            <div className="mb-6">
-                <p className="text-gray-400 text-xs mb-2">Manual Payment UPI ID:</p>
-                <div className="flex items-center gap-2 bg-primary/30 p-2 rounded-lg border border-accent/10">
-                    <code className="text-accent text-sm flex-1 overflow-hidden text-ellipsis">nidhi005tank@okhdfcbank</code>
+                <div className="md:hidden">
                     <button
-                        onClick={handleCopy}
-                        className="bg-accent text-primary px-3 py-1 rounded text-xs font-bold hover:bg-accent-light transition-all"
+                        onClick={handleUPIPay}
+                        className="w-full bg-accent text-primary hover:bg-accent-light py-4 rounded-lg font-bold transition-all flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(212,175,55,0.3)] animate-pulse"
                     >
-                        {copied ? 'Copied!' : 'Copy ID'}
+                        <img src="https://www.vectorlogo.zone/logos/upi/upi-icon.svg" alt="UPI" className="w-8 h-8 brightness-0" />
+                        Pay via any UPI App
                     </button>
+                    <p className="text-[10px] text-gray-400 mt-2 text-center">
+                        (Google Pay, PhonePe, Paytm, etc.)
+                    </p>
+                </div>
+
+                {/* Failsafe: Copy UPI ID */}
+                <div className="mt-4">
+                    <p className="text-gray-400 text-xs mb-2">Or pay manually to this UPI ID:</p>
+                    <div className="flex items-center gap-2 bg-primary/30 p-2 rounded-lg border border-accent/10">
+                        <code className="text-accent text-sm flex-1 overflow-hidden text-ellipsis">nidhi005tank@okhdfcbank</code>
+                        <button
+                            onClick={handleCopy}
+                            className="bg-accent text-primary px-3 py-1 rounded text-xs font-bold hover:bg-accent-light transition-all"
+                        >
+                            {copied ? 'Copied!' : 'Copy'}
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            <div className="bg-accent/5 p-4 rounded-lg mb-6 border border-accent/20">
-                <label className="flex items-center gap-3 cursor-pointer group">
-                    <input
-                        type="checkbox"
-                        checked={hasPaid}
-                        onChange={(e) => setHasPaid(e.target.checked)}
-                        className="w-5 h-5 rounded border-accent text-accent focus:ring-accent accent-accent"
-                    />
-                    <span className="text-sm text-gray-200 group-hover:text-accent transition-colors">
-                        I have completed the UPI payment of ₹{totalPrice}
-                    </span>
-                </label>
+            {/* Step 2: Confirm */}
+            <div className="text-left border-t border-accent/10 pt-6">
+                <div className="flex items-center gap-3 mb-4">
+                    <span className="bg-accent text-primary w-6 h-6 rounded-full flex items-center justify-center font-bold text-sm">2</span>
+                    <h3 className="text-lg font-bold text-white">Confirm Order</h3>
+                </div>
+                <p className="text-xs text-gray-400 mb-4">
+                    Once paid, return to this page, check the box, and click confirm to send your order via WhatsApp.
+                </p>
+
+                <div className="bg-accent/5 p-4 rounded-lg mb-6 border border-accent/20">
+                    <label className="flex items-center gap-3 cursor-pointer group">
+                        <input
+                            type="checkbox"
+                            checked={hasPaid}
+                            onChange={(e) => setHasPaid(e.target.checked)}
+                            className="w-5 h-5 rounded border-accent text-accent focus:ring-accent accent-accent"
+                        />
+                        <span className="text-sm text-gray-200 group-hover:text-accent transition-colors">
+                            I have paid ₹{totalPrice}
+                        </span>
+                    </label>
+                </div>
             </div>
 
             <div className="flex flex-col gap-3">
