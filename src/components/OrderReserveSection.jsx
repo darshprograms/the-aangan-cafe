@@ -81,20 +81,6 @@ const OrderReserveSection = () => {
         setTimeout(() => setCopied(false), 2000);
     };
 
-    const handleUPIPay = () => {
-        if (totalPrice <= 0) {
-            alert("Amount must be at least ₹1 to pay via UPI.");
-            return;
-        }
-
-        const formattedAmount = Number(totalPrice).toFixed(2);
-        // Using tez:// to force open Google Pay (Tez) directly
-        const upiParams = `pa=${UPI_ID}&pn=AanganCafe&am=${formattedAmount}&cu=INR&mc=5812&mode=02`;
-        const upiUrl = `tez://pay?${upiParams}`;
-
-        window.location.href = upiUrl;
-    };
-
     const sendWhatsAppMessage = () => {
         const orderDetails = cart.map(item => `• ${item.name} x ${item.quantity} (₹${item.price * item.quantity})`).join('%0A');
         const message = `*🔔 New Order/Reservation*%0A%0A` +
@@ -322,18 +308,6 @@ const OrderReserveSection = () => {
             </div>
             <p className="text-gray-300 mb-4 font-medium">Scan QR to pay <span className="text-accent text-xl font-bold">₹{totalPrice}</span></p>
 
-            <div className="mb-4">
-                <button
-                    onClick={handleUPIPay}
-                    className="w-full bg-primary border-2 border-accent text-accent hover:bg-accent hover:text-primary py-3 rounded-lg font-bold transition-all flex items-center justify-center gap-2 group md:hidden"
-                >
-                    <img src="https://www.vectorlogo.zone/logos/google_pay/google_pay-icon.svg" alt="GPay" className="w-8 h-8 group-hover:brightness-0 transition-all" />
-                    Pay with Google Pay
-                </button>
-                <p className="text-[10px] text-gray-400 mt-2 md:hidden">
-                    After paying, come back and check the box below to finish.
-                </p>
-            </div>
 
             {/* Failsafe: Copy UPI ID */}
             <div className="mb-6">
