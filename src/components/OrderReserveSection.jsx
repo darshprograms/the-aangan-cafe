@@ -19,6 +19,7 @@ const OrderReserveSection = () => {
     const [menuType, setMenuType] = useState('food'); // 'food' or 'drink'
     const [hasPaid, setHasPaid] = useState(false);
     const [copied, setCopied] = useState(false);
+    const [showScrollPrompt, setShowScrollPrompt] = useState(false);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -59,6 +60,10 @@ const OrderReserveSection = () => {
             }
             return [...prev, { ...item, quantity: 1 }];
         });
+
+        // Show scroll prompt on mobile
+        setShowScrollPrompt(true);
+        setTimeout(() => setShowScrollPrompt(false), 3000);
     };
 
     const removeFromCart = (itemName) => {
@@ -207,6 +212,7 @@ const OrderReserveSection = () => {
 
     const renderStep2 = () => {
         const filteredCategories = menuCategories.filter(cat => cat.type === menuType);
+        const getItemQuantity = (itemName) => cart.find(i => i.name === itemName)?.quantity || 0;
 
         return (
             <div className="w-full max-w-6xl mx-auto flex flex-col lg:flex-row gap-8 animate-fade-in">
@@ -243,12 +249,30 @@ const OrderReserveSection = () => {
                                                 <span className="font-medium">{item.name}</span>
                                                 <span className="text-accent text-sm">₹{item.price}</span>
                                             </div>
-                                            <button
-                                                onClick={() => addToCart(item)}
-                                                className="bg-accent/10 text-accent border border-accent/30 px-3 py-1 rounded hover:bg-accent hover:text-primary transition-colors text-sm font-bold"
-                                            >
-                                                Add +
-                                            </button>
+                                            {getItemQuantity(item.name) > 0 ? (
+                                                <div className="flex items-center gap-2 bg-accent/20 rounded-lg p-1 border border-accent/30">
+                                                    <button
+                                                        onClick={(e) => { e.stopPropagation(); removeFromCart(item.name); }}
+                                                        className="w-8 h-8 flex items-center justify-center rounded bg-accent/20 text-accent hover:bg-accent hover:text-primary transition-all font-bold"
+                                                    >
+                                                        −
+                                                    </button>
+                                                    <span className="w-6 text-center font-bold text-accent">{getItemQuantity(item.name)}</span>
+                                                    <button
+                                                        onClick={(e) => { e.stopPropagation(); addToCart(item); }}
+                                                        className="w-8 h-8 flex items-center justify-center rounded bg-accent text-primary hover:bg-accent-light transition-all font-bold shadow-[0_0_10px_rgba(212,175,55,0.2)]"
+                                                    >
+                                                        +
+                                                    </button>
+                                                </div>
+                                            ) : (
+                                                <button
+                                                    onClick={() => addToCart(item)}
+                                                    className="bg-accent/10 text-accent border border-accent/30 px-4 py-1.5 rounded-lg hover:bg-accent hover:text-primary transition-all text-sm font-bold shadow-sm"
+                                                >
+                                                    Add +
+                                                </button>
+                                            )}
                                         </div>
                                     ))}
                                 </div>
@@ -293,7 +317,14 @@ const OrderReserveSection = () => {
                         </>
                     )}
                 </div>
-            </div>
+
+                {/* Mobile Scroll Prompt */}
+                {showScrollPrompt && (
+                    <div className="lg:hidden fixed bottom-6 left-1/2 -translate-x-1/2 bg-accent text-primary px-6 py-3 rounded-full font-bold shadow-2xl animate-bounce z-50 flex items-center gap-2 border-2 border-primary whitespace-nowrap">
+                        <span>⬇️ Scroll down to check your order</span>
+                    </div>
+                )}
+            </div >
         );
     };
 
