@@ -88,8 +88,8 @@ const OrderReserveSection = () => {
         }
 
         const formattedAmount = Number(totalPrice).toFixed(2);
-        // Clean UPI protocol for personal accounts (removed mc/pn to avoid app blocks)
-        const upiParams = `pa=${UPI_ID}&am=${formattedAmount}&cu=INR`;
+        // Clean but complete UPI protocol (added pn and tn which are mandatory for some banks)
+        const upiParams = `pa=${UPI_ID}&pn=Nidhi%20Tank&am=${formattedAmount}&cu=INR&tn=Order`;
         const upiUrl = `upi://pay?${upiParams}`;
 
         window.location.href = upiUrl;
@@ -322,12 +322,18 @@ const OrderReserveSection = () => {
                     <h3 className="text-xl font-bold text-white uppercase tracking-wider">Step 1: Make Payment 💰</h3>
                 </div>
 
-                <div className="bg-white p-4 rounded-lg inline-block w-full mb-4 border-4 border-accent text-center">
+                <div className="bg-white p-6 rounded-lg inline-block w-full mb-4 border-4 border-accent text-center relative overflow-hidden">
+                    <div className="absolute top-0 right-0 bg-accent text-primary text-[10px] font-bold px-2 py-1 rounded-bl-lg shadow-sm">
+                        ⭐ MOST RELIABLE
+                    </div>
                     {/* Mock QR Code */}
-                    <div className="max-w-[200px] mx-auto relative p-1 bg-white rounded-xl shadow-lg">
+                    <div className="max-w-[220px] mx-auto relative p-2 bg-white rounded-xl shadow-inner border border-gray-100">
                         <img src="/payment-qr.png" alt="Payment QR" className="w-full h-auto rounded-lg" />
                     </div>
-                    <p className="text-primary-dark mt-3 font-bold text-sm">Scan QR to pay ₹{totalPrice}</p>
+                    <p className="text-primary-dark mt-4 font-black text-base uppercase">Scan QR to pay ₹{totalPrice}</p>
+                    <p className="text-[10px] text-gray-400 mt-1 leading-tight">
+                        (Guaranteed to work with all banks)
+                    </p>
                 </div>
 
                 <div className="mb-6">
@@ -342,7 +348,7 @@ const OrderReserveSection = () => {
 
                     </button>
                     <p className="text-[11px] text-accent-light mt-3 text-center font-medium bg-accent/5 py-2 rounded border border-accent/20">
-                        ⚡ Click above to open your payment app directly
+                        💡 Tip: If the button above shows an error, please **Scan the QR code** instead.
                     </p>
                 </div>
 
